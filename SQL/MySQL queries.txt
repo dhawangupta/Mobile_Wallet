@@ -1,0 +1,84 @@
+  drop database if exists mobilewallet; 
+ 
+ create database mobilewallet;
+ 
+ use mobilewallet; 
+ 
+ drop table if exists mobile_wallet;
+ 
+ create table mobile_wallet (
+ id int(8) unsigned not null auto_increment,
+ name varchar(50) not null,
+ username varchar(50) not null,
+ email varchar(50) not null,
+ balance bigint default 0,
+ primary key (id),
+ unique key (username));
+ 
+ alter table mobile_wallet
+ add unique (email);
+ 
+ alter table mobile_wallet add column mobileno bigint(10) not null unique;
+ 
+ drop table if exists transactions;
+ 
+ create table transactions (
+ tid int(20) unsigned not null auto_increment primary key,
+ sid int(8) unsigned not null,
+ rid int(8) unsigned not null,
+ amount bigint(20),
+ foreign key(sid) references mobile_wallet(id)
+ );
+ 
+ alter table transactions 
+ add foreign key(rid) references mobile_wallet(id);
+ 
+ desc transactions;
+  
+ select * from mobile_wallet;
+ 
+ select * from transactions;
+ 
+ create table send_money (
+ sid int(20) unsigned not null auto_increment primary key,
+ senderid int(8) unsigned not null,
+ amount bigint(20) not null,
+ rmobileno bigint(10) not null,
+ foreign key(senderid) references mobile_wallet(id)
+ ON UPDATE CASCADE ON DELETE RESTRICT
+ );
+ 
+alter table send_money 
+add foreign key(rmobileno) references mobile_wallet(mobileno);
+ 
+ desc send_money;
+ 
+ create table add_money (
+ addid int(20) unsigned not null auto_increment primary key,
+ uid int(8) unsigned not null,
+ amount bigint(20) not null,
+ foreign key(uid) references mobile_wallet(id)
+ ON UPDATE CASCADE ON DELETE RESTRICT
+ );
+ 
+ 
+ 
+ create table req_sent (
+ rsid int(20) unsigned not null auto_increment primary key,
+ senderid int(8) unsigned not null,
+ receiverid int(8) unsigned not null,
+ amount bigint(20) not null,
+ foreign key(senderid) references mobile_wallet(id)
+ ON UPDATE CASCADE ON DELETE RESTRICT
+ );
+ 
+ alter table req_sent 
+ add foreign key(receiverid) references mobile_wallet(id);
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
